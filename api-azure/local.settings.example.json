@@ -1,0 +1,9 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "SHAREPOINT_DOWNLOAD_URL": "https://fiasec-my.sharepoint.com/personal/jcruzg_fias_org_ec/_layouts/15/download.aspx?share=IQAUjBvkE6TPT7eb5vhBTZxcAaAltunzyoWrEzM5q5mVINo",
+    "ALLOWED_ORIGINS": "https://REEMPLAZAR.github.io"
+  }
+}

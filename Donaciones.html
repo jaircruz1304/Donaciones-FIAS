@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#123c2e" />
+  <title>Control de Donaciones | FIAS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root{
+      --brand-950:#0b2a20; --brand-900:#123c2e; --brand-800:#19513d; --brand-700:#216a4c;
+      --brand-600:#2d7c58; --brand-500:#3f9269; --accent:#b8d63b;
+      --ink:#17211d; --muted:#66736d; --canvas:#f4f7f5; --card:#fff; --line:#dde6e1;
+      --danger:#bd2c32; --warn:#b06d00; --ok:#237a4a; --info:#3467a7;
+      --shadow:0 10px 30px rgba(12,42,32,.08); --radius:18px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+    a{text-decoration:none} .app{min-height:100vh}
+    .topnav{position:sticky;top:0;z-index:1100;background:rgba(11,42,32,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+    .topnav-inner{max-width:1680px;margin:auto;padding:.72rem 1.4rem;display:flex;align-items:center;gap:1rem}
+    .brand{display:flex;align-items:center;gap:.9rem;min-width:280px}.brand img{width:116px;height:44px;object-fit:contain;background:#fff;border-radius:8px;padding:5px}.brand-copy{color:#fff;line-height:1.12}.brand-copy strong{font-size:.96rem}.brand-copy small{display:block;color:rgba(255,255,255,.66);font-size:.73rem;margin-top:3px}
+    .nav-spacer{flex:1}.nav-actions{display:flex;gap:.55rem;align-items:center}.btn-nav{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff;border-radius:10px;padding:.55rem .8rem;font-weight:700;font-size:.82rem}.btn-nav:hover{background:rgba(255,255,255,.13);color:#fff}.btn-nav.primary{background:var(--accent);border-color:var(--accent);color:#18351f}
+    .page{max-width:1680px;margin:auto;padding:1.35rem 1.4rem 2rem}
+    .command-head{display:grid;grid-template-columns:1.4fr .8fr;gap:1rem;margin-bottom:1rem}
+    .executive-card{background:linear-gradient(132deg,var(--brand-950),var(--brand-800));color:#fff;border-radius:24px;padding:1.45rem 1.55rem;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .executive-card:after{content:"";position:absolute;right:-90px;top:-110px;width:290px;height:290px;border-radius:50%;border:55px solid rgba(184,214,59,.13)}
+    .executive-card .eyebrow{display:inline-flex;align-items:center;gap:.4rem;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#dbe9df;margin-bottom:.7rem}.executive-card h1{font-size:clamp(1.65rem,2.8vw,2.7rem);font-weight:800;letter-spacing:-.04em;margin:0;position:relative;z-index:2}.executive-card p{max-width:850px;color:rgba(255,255,255,.72);font-size:.9rem;margin:.7rem 0 0;position:relative;z-index:2}
+    .health-card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:1.15rem 1.2rem;box-shadow:var(--shadow)}
+    .health-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}.health-title h2{font-size:.92rem;font-weight:800;margin:0}.health-status{display:inline-flex;align-items:center;gap:.42rem;font-size:.76rem;font-weight:800}.dot{width:9px;height:9px;border-radius:50%;background:#9aa6a0}.dot.ok{background:#27a465;box-shadow:0 0 0 4px rgba(39,164,101,.12)}.dot.warn{background:#d28b1b;box-shadow:0 0 0 4px rgba(210,139,27,.12)}.dot.error{background:#d84b52;box-shadow:0 0 0 4px rgba(216,75,82,.12)}
+    .health-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}.health-cell{padding:.72rem;border:1px solid var(--line);border-radius:13px;background:#f9fbfa}.health-cell small{display:block;color:var(--muted);font-size:.68rem;text-transform:uppercase;font-weight:800;letter-spacing:.04em}.health-cell strong{display:block;margin-top:.2rem;font-size:.84rem;word-break:break-word}
+    .latest-strip{margin-bottom:1rem;border-radius:18px;padding:1rem 1.1rem;display:flex;gap:1rem;align-items:center;background:#eef5dd;border:1px solid #d7e5a1}.latest-strip .badge-new{background:var(--brand-900);color:#fff;border-radius:8px;padding:.35rem .52rem;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}.latest-strip .latest-copy{flex:1;min-width:0}.latest-strip strong{display:block;font-size:.92rem}.latest-strip span{font-size:.78rem;color:#59654e}.latest-strip .latest-amount{font-size:1.05rem;font-weight:800;color:var(--brand-900);white-space:nowrap}
+    .kpi-grid{display:grid;grid-template-columns:repeat(6,minmax(150px,1fr));gap:.75rem;margin-bottom:1rem}.kpi{background:#fff;border:1px solid var(--line);border-radius:17px;padding:1rem;box-shadow:0 6px 20px rgba(12,42,32,.04)}.kpi-top{display:flex;justify-content:space-between;align-items:center;gap:.5rem}.kpi-label{font-size:.69rem;text-transform:uppercase;color:var(--muted);font-weight:800;letter-spacing:.05em}.kpi-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#edf4f0;color:var(--brand-700)}.kpi strong{display:block;font-size:1.45rem;letter-spacing:-.035em;margin-top:.55rem}.kpi small{font-size:.72rem;color:var(--muted)}
+    .workspace{display:grid;grid-template-columns:330px minmax(0,1fr);gap:1rem;align-items:start}.filters{position:sticky;top:77px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}.filters-head{padding:1rem 1rem .85rem;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.filters-head h2{font-size:.93rem;font-weight:800;margin:0}.filters-body{padding:.85rem}.filter-group{margin-bottom:.9rem}.filter-group label{display:block;font-size:.7rem;text-transform:uppercase;font-weight:800;color:#52615a;margin-bottom:.35rem;letter-spacing:.04em}.form-control,.form-select{border-radius:11px;border-color:#d8e3dd;font-size:.84rem}.form-control:focus,.form-select:focus{border-color:var(--brand-500);box-shadow:0 0 0 .18rem rgba(63,146,105,.12)}.filter-actions{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.btn-brand{background:var(--brand-800);color:#fff;border:none;border-radius:10px;font-weight:750;font-size:.8rem}.btn-brand:hover{background:var(--brand-950);color:#fff}.btn-soft{background:#f0f4f2;color:#34443c;border:1px solid #dce5e0;border-radius:10px;font-weight:700;font-size:.8rem}.filter-summary{font-size:.74rem;color:var(--muted);margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--line)}
+    .maincol{min-width:0}.section-tabs{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:.75rem}.view-tab{border:1px solid var(--line);background:#fff;color:#4f5d57;border-radius:10px;padding:.55rem .75rem;font-size:.79rem;font-weight:750}.view-tab.active{background:var(--brand-900);color:#fff;border-color:var(--brand-900)}
+    .section-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:1rem}.section-head{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:1rem 1.1rem;border-bottom:1px solid var(--line)}.section-head h2{font-size:.96rem;font-weight:800;margin:0}.section-head small{color:var(--muted);font-size:.72rem}
+    .donation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;padding:1rem}.donation-card{border:1px solid var(--line);border-radius:16px;padding:1rem;background:#fff;transition:.18s ease;position:relative;overflow:hidden}.donation-card:hover{transform:translateY(-2px);box-shadow:0 11px 25px rgba(12,42,32,.08);border-color:#c6d7cd}.donation-card.is-latest{border-color:#a8c44a;box-shadow:inset 4px 0 0 #a8c44a}.donation-head{display:flex;justify-content:space-between;gap:.7rem;align-items:flex-start}.donation-id{font-size:.69rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800}.donation-title{font-size:1rem;font-weight:800;line-height:1.25;margin:.2rem 0}.donation-beneficiary{font-size:.79rem;color:#57645e;line-height:1.35}.amount{font-size:1.1rem;font-weight:800;color:var(--brand-900);white-space:nowrap}.meta-row{display:flex;gap:.45rem;flex-wrap:wrap;margin:.75rem 0}.pill{display:inline-flex;align-items:center;gap:.3rem;border-radius:999px;padding:.3rem .52rem;font-size:.68rem;font-weight:800}.pill.estado{background:#edf5f0;color:#276646}.pill.critico{background:#fdeced;color:#a7252b}.pill.atencion{background:#fff5e2;color:#9a6200}.pill.normal{background:#ebf5ed;color:#267341}.pill.finalizado{background:#e9f0fb;color:#3466a2}.pill.sin-iniciar{background:#eef1f0;color:#5d6863}.description{font-size:.78rem;color:#3f4d46;line-height:1.45;min-height:45px}.action-box{margin-top:.75rem;background:#f6f8f7;border-radius:11px;padding:.7rem .75rem;font-size:.76rem;color:#425047}.action-box strong{color:#223229}.progress-wrap{margin-top:.8rem}.progress-label{display:flex;justify-content:space-between;font-size:.69rem;font-weight:750;color:#66736d;margin-bottom:.3rem}.progress{height:7px;background:#e8eeeb}.progress-bar{background:linear-gradient(90deg,var(--brand-700),var(--accent))}.card-footer-row{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-top:.8rem;padding-top:.75rem;border-top:1px solid #edf1ef;font-size:.7rem;color:var(--muted)}.detail-btn{border:none;background:#edf4f0;color:var(--brand-800);border-radius:8px;padding:.4rem .55rem;font-weight:800}
+    .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;padding:1rem}.chart-box{border:1px solid var(--line);border-radius:14px;padding:.85rem;min-height:300px}.chart-box h3{font-size:.82rem;font-weight:800;margin:0 0 .65rem}.chart-canvas{height:245px;position:relative}
+    .table-wrap{overflow:auto}.enterprise-table{width:100%;border-collapse:separate;border-spacing:0;font-size:.77rem}.enterprise-table thead th{position:sticky;top:0;background:#f2f6f4;color:#45544d;text-transform:uppercase;letter-spacing:.04em;font-size:.66rem;padding:.7rem .65rem;border-bottom:1px solid var(--line);white-space:nowrap}.enterprise-table tbody td{padding:.72rem .65rem;border-bottom:1px solid #edf1ef;vertical-align:top}.enterprise-table tbody tr:hover{background:#f8faf9}.row-latest{background:#fbfdef}.mini-progress{min-width:105px}.table-empty{text-align:center;color:var(--muted);padding:2rem!important}
+    .state-badge{display:inline-flex;align-items:center;gap:.3rem;border-radius:999px;padding:.28rem .48rem;font-size:.66rem;font-weight:800;background:#edf4f0;color:#36584a}
+    .modal-content{border:0;border-radius:18px;overflow:hidden}.modal-header{background:var(--brand-950);color:#fff;border:0}.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem}.detail-item{border:1px solid var(--line);border-radius:12px;padding:.8rem}.detail-item.full{grid-column:1/-1}.detail-item small{display:block;color:var(--muted);text-transform:uppercase;font-size:.65rem;font-weight:800;letter-spacing:.04em;margin-bottom:.25rem}.detail-item div{font-size:.82rem;line-height:1.5;word-break:break-word}
+    .source-banner{display:none;margin-bottom:1rem;padding:.75rem .9rem;border-radius:12px;font-size:.78rem;font-weight:650}.source-banner.show{display:block}.source-banner.warn{background:#fff7e9;color:#82530c;border:1px solid #efd39f}.source-banner.error{background:#fff0f0;color:#962d33;border:1px solid #efb8bb}.source-banner.ok{background:#edf8f1;color:#236342;border:1px solid #bfdfca}
+    @media(max-width:1250px){.command-head{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(3,1fr)}.workspace{grid-template-columns:280px minmax(0,1fr)}}
+    @media(max-width:900px){.topnav-inner{padding:.65rem .85rem}.brand{min-width:0}.brand-copy{display:none}.nav-actions .hide-sm{display:none}.page{padding:1rem .85rem 1.5rem}.workspace{grid-template-columns:1fr}.filters{position:static}.donation-grid,.charts-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(2,1fr)}.health-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:560px){.brand img{width:92px;height:38px}.btn-nav{padding:.5rem .58rem}.command-head{gap:.7rem}.executive-card,.health-card{border-radius:18px}.kpi-grid{grid-template-columns:1fr 1fr}.latest-strip{align-items:flex-start;flex-wrap:wrap}.latest-strip .latest-amount{width:100%}.donation-grid{padding:.7rem}.detail-grid{grid-template-columns:1fr}.health-grid{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}}
+    @media print{.topnav,.filters,.section-tabs,.nav-actions,.source-banner,.detail-btn{display:none!important}.page{max-width:none;padding:0}.workspace{display:block}.section-card,.kpi,.executive-card,.health-card{box-shadow:none}.donation-grid{grid-template-columns:1fr 1fr}.command-head{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topnav">
+    <div class="topnav-inner">
+      <div class="brand">
+        <img src="https://fias.org.ec/wp-content/uploads/2021/11/Logo_FIAS_web.png" alt="FIAS" onerror="this.src='https://raw.githubusercontent.com/jaircruz1304/FIAS/main/Logo_FIAS.png'">
+        <div class="brand-copy"><strong>Control de Donaciones</strong><small>Gestión, seguimiento y trazabilidad institucional</small></div>
+      </div>
+      <div class="nav-spacer"></div>
+      <div class="nav-actions">
+        <input type="file" id="excelInput" accept=".xlsx,.xls,.csv" hidden>
+        <button class="btn-nav hide-sm" id="btnExcel" title="Uso de contingencia"><i class="fa-solid fa-file-excel me-1"></i> Excel contingencia</button>
+        <button class="btn-nav hide-sm" id="btnExport"><i class="fa-solid fa-download me-1"></i> CSV</button>
+        <button class="btn-nav primary" id="btnRefresh"><i class="fa-solid fa-rotate me-1"></i> Actualizar</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div id="sourceBanner" class="source-banner"></div>
+
+    <section class="command-head">
+      <div class="executive-card">
+        <div class="eyebrow"><i class="fa-solid fa-shield-heart"></i> FIAS · Control institucional</div>
+        <h1>Panel ejecutivo de donaciones</h1>
+        <p>Vista integral para monitorear montos, avance, criticidad, beneficiarios, acciones pendientes y expedientes digitales. La información se consulta directamente desde el Excel institucional de origen y la donación más reciente se muestra primero.</p>
+      </div>
+      <div class="health-card">
+        <div class="health-title"><h2>Estado de información</h2><span class="health-status"><span id="healthDot" class="dot"></span><span id="healthText">Inicializando</span></span></div>
+        <div class="health-grid">
+          <div class="health-cell"><small>Fuente activa</small><strong id="sourceActive">—</strong></div>
+          <div class="health-cell"><small>Registros</small><strong id="sourceRecords">—</strong></div>
+          <div class="health-cell"><small>Última consulta al origen</small><strong id="sourceUpdated">—</strong></div>
+          <div class="health-cell"><small>Último Nro.</small><strong id="sourceLastNro">—</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="latest-strip" id="latestStrip">
+      <span class="badge-new">Última donación</span>
+      <div class="latest-copy"><strong id="latestTitle">Cargando...</strong><span id="latestSubtitle"></span></div>
+      <div class="latest-amount" id="latestAmount">—</div>
+    </section>
+
+    <section class="kpi-grid">
+      <article class="kpi"><div class="kpi-top"><span class="kpi-label">Donaciones</span><span class="kpi-icon"><i class="fa-solid fa-boxes-stacked"></i></span></div><strong id="kpiTotal">0</strong><small>registros visibles</small></article>
+      <article class="kpi"><div class="kpi-top"><span class="kpi-label">Monto total</span><span class="kpi-icon"><i class="fa-solid fa-dollar-sign"></i></span></div><strong id="kpiMonto">$0</strong><small>valor estimado USD</small></article>
+      <article class="kpi"><div class="kpi-top"><span class="kpi-label">Avance medio</span><span class="kpi-icon"><i class="fa-solid fa-gauge-high"></i></span></div><strong id="kpiAvance">0%</strong><small>promedio de gestión</small></article>
+      <article class="kpi"><div class="kpi-top"><span class="kpi-label">Críticas</span><span class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></span></div><strong id="kpiCriticas">0</strong><small>requieren atención</small></article>
+      <article class="kpi"><div class="kpi-top"><span class="kpi-label">Finalizadas</span><span class="kpi-icon"><i class="fa-solid fa-circle-check"></i></span></div><strong id="kpiFinalizadas">0</strong><small>cerradas</small></article>
+      <article class="kpi"><div class="kpi-top"><span class="kpi-label">En gestión</span><span class="kpi-icon"><i class="fa-solid fa-arrows-rotate"></i></span></div><strong id="kpiGestion">0</strong><small>activas / iniciadas</small></article>
+    </section>
+
+    <section class="workspace">
+      <aside class="filters">
+        <div class="filters-head"><h2><i class="fa-solid fa-sliders me-2"></i>Filtros</h2><span id="filterCount" class="badge text-bg-light">0</span></div>
+        <div class="filters-body">
+          <div class="filter-group"><label for="searchInput">Búsqueda global</label><input id="searchInput" class="form-control" placeholder="Beneficiario, programa, bien, responsable..."></div>
+          <div class="filter-group"><label for="programFilter">Programa / proyecto</label><select id="programFilter" class="form-select"><option value="">Todos</option></select></div>
+          <div class="filter-group"><label for="statusFilter">Estado</label><select id="statusFilter" class="form-select"><option value="">Todos</option></select></div>
+          <div class="filter-group"><label for="trafficFilter">Semáforo</label><select id="trafficFilter" class="form-select"><option value="">Todos</option></select></div>
+          <div class="filter-group"><label for="responseFilter">Respuesta beneficiario</label><select id="responseFilter" class="form-select"><option value="">Todas</option></select></div>
+          <div class="filter-group"><label for="progressFilter">Avance</label><select id="progressFilter" class="form-select"><option value="">Todos</option><option value="0-25">0% – 25%</option><option value="26-50">26% – 50%</option><option value="51-75">51% – 75%</option><option value="76-100">76% – 100%</option></select></div>
+          <div class="filter-actions"><button id="btnCritical" class="btn btn-brand"><i class="fa-solid fa-triangle-exclamation me-1"></i> Críticas</button><button id="btnClear" class="btn btn-soft"><i class="fa-solid fa-eraser me-1"></i> Limpiar</button></div>
+          <div class="filter-summary"><strong id="visibleLabel">0</strong> registros cumplen los filtros actuales.</div>
+        </div>
+      </aside>
+
+      <div class="maincol">
+        <div class="section-tabs">
+          <button class="view-tab active" data-view="cards"><i class="fa-solid fa-grip me-1"></i> Vista ejecutiva</button>
+          <button class="view-tab" data-view="charts"><i class="fa-solid fa-chart-simple me-1"></i> Análisis</button>
+          <button class="view-tab" data-view="table"><i class="fa-solid fa-table me-1"></i> Tabla</button>
+        </div>
+
+        <section class="section-card view-panel" id="view-cards">
+          <div class="section-head"><div><h2>Portafolio de donaciones</h2><small>Ordenado de la más reciente a la más antigua</small></div><small id="cardsCounter">0 registros</small></div>
+          <div class="donation-grid" id="donationGrid"></div>
+        </section>
+
+        <section class="section-card view-panel d-none" id="view-charts">
+          <div class="section-head"><div><h2>Análisis de cartera</h2><small>Distribución de registros visibles</small></div></div>
+          <div class="charts-grid">
+            <div class="chart-box"><h3>Donaciones por estado</h3><div class="chart-canvas"><canvas id="chartStatus"></canvas></div></div>
+            <div class="chart-box"><h3>Monto por programa</h3><div class="chart-canvas"><canvas id="chartProgram"></canvas></div></div>
+            <div class="chart-box"><h3>Semáforo de gestión</h3><div class="chart-canvas"><canvas id="chartTraffic"></canvas></div></div>
+            <div class="chart-box"><h3>Avance por donación</h3><div class="chart-canvas"><canvas id="chartProgress"></canvas></div></div>
+          </div>
+        </section>
+
+        <section class="section-card view-panel d-none" id="view-table">
+          <div class="section-head"><div><h2>Detalle tabular</h2><small>Vista de control y auditoría</small></div></div>
+          <div class="table-wrap">
+            <table class="enterprise-table">
+              <thead><tr><th>Nro.</th><th>Programa</th><th>Beneficiario</th><th>Valor</th><th>Estado</th><th>Avance</th><th>Semáforo</th><th>Días</th><th>Responsable</th><th></th></tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content">
+    <div class="modal-header"><div><h5 class="modal-title fw-bold" id="modalTitle">Detalle de donación</h5><small id="modalSubtitle" class="opacity-75"></small></div><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body p-4" id="modalBody"></div>
+  </div></div>
+</div>
+
+<script src="./config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+(() => {
+  'use strict';
+  const CONFIG = window.FIAS_DONACIONES_CONFIG || {};
+  const API_URL = String(CONFIG.apiUrl || '').trim();
+  const REFRESH_SECONDS = Math.max(15, Number(CONFIG.refreshSeconds) || 60);
+  const money = new Intl.NumberFormat('es-EC',{style:'currency',currency:'USD',maximumFractionDigits:2});
+  const number = new Intl.NumberFormat('es-EC');
+  let data = [];
+  let filtered = [];
+  let activeSource = 'Excel institucional de origen';
+  let sourceMeta = {};
+  let lastSuccessfulUpdate = null;
+  let charts = {};
+
+  const $ = id => document.getElementById(id);
+  const normalize = v => String(v ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const pct = v => Math.round((Number(v)||0)*100);
+  const validNro = r => r && r.nro !== null && r.nro !== undefined && String(r.nro).trim() !== '';
+
+  function parseNum(v){ if(v===null||v===undefined||v==='') return 0; if(typeof v==='number') return v; let s=String(v).replace(/[^\d,.-]/g,''); if(s.includes(',')&&s.includes('.')) s=s.replace(/\./g,'').replace(',','.'); else if(s.includes(',')) s=s.replace(',','.'); const n=Number(s); return Number.isFinite(n)?n:0; }
+  function parseProgress(v){ if(typeof v==='number') return v>1?v/100:v; const s=String(v??'').trim(); const n=parseNum(s); return s.includes('%')?n/100:(n>1?n/100:n); }
+  function isoDate(v){ if(!v) return ''; if(v instanceof Date&&!isNaN(v)) return v.toISOString().slice(0,10); if(typeof v==='number'&&window.XLSX){ const p=XLSX.SSF.parse_date_code(v); if(p) return `${String(p.y).padStart(4,'0')}-${String(p.m).padStart(2,'0')}-${String(p.d).padStart(2,'0')}`; } const t=String(v).trim(); let m=t.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/); if(m) return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`; m=t.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/); if(m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`; return t; }
+  function key(v){ return normalize(v).replace(/[^a-z0-9]/g,''); }
+  function normalizeRow(row){
+    if(!row) return {};
+    const idx={}; Object.keys(row).forEach(k=>idx[key(k)]=row[k]);
+    const get=(...aliases)=>{ for(const a of aliases){ const k=key(a); if(Object.prototype.hasOwnProperty.call(idx,k)) return idx[k]; } return ''; };
+    return {
+      nro:get('nro','nro.','numero','id'), programa:String(get('programa','fondo / programa / proyecto','fondo programa proyecto','proyecto','fondo')??'').trim(),
+      beneficiario:String(get('beneficiario','beneficiario final')??'').trim(), descripcion:String(get('descripcion','descripción de bienes a donar','descripcion de bienes a donar','bienes')??'').trim(),
+      valor:parseNum(get('valor','valor estimado (usd)','valor estimado usd','monto')), fechaIntencion:isoDate(get('fechaIntencion','fecha de intención','fecha de intencion')),
+      respuesta:String(get('respuesta','respuesta del beneficiario')??'').trim(), fechaActa:isoDate(get('fechaActa','fecha de acta entrega-recepción','fecha de acta entrega recepcion')),
+      estado:String(get('estado','estado actual')??'').trim(), avance:parseProgress(get('avance','avance %','porcentaje de avance')), proximaAccion:String(get('proximaAccion','próxima acción requerida','proxima accion requerida')??'').trim(),
+      responsable:String(get('responsable','responsable / área','responsable / area')??'').trim(), expediente:String(get('expediente','expediente digital','enlace','url')??'').trim(),
+      detalle:String(get('detalle','detalle del trámite','detalle del tramite')??'').trim(), observaciones:String(get('observaciones','observaciones / alertas','observaciones alertas')??'').trim(),
+      diasGestion:(()=>{const x=get('diasGestion','días en gestión','dias en gestion','dias'); return x===''||x===null||x===undefined?null:parseNum(x)})(), semaforo:String(get('semaforo','semáforo','alerta')??'').trim()
+    };
+  }
+  function sortNewest(arr){ return [...arr].sort((a,b)=>{ const da=Date.parse(a.fechaIntencion||'')||0, db=Date.parse(b.fechaIntencion||'')||0; if(db!==da) return db-da; return (parseNum(b.nro)||0)-(parseNum(a.nro)||0); }); }
+  function unique(field){ return [...new Set(data.map(r=>r[field]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es')); }
+  function semClass(v){ const n=normalize(v); if(n.includes('critico')) return 'critico'; if(n.includes('atencion')) return 'atencion'; if(n.includes('finalizado')) return 'finalizado'; if(n.includes('sin iniciar')) return 'sin-iniciar'; return 'normal'; }
+  function formatDate(v){ if(!v) return 'Sin fecha'; const d=new Date(`${v}T00:00:00`); return isNaN(d)?String(v):new Intl.DateTimeFormat('es-EC',{dateStyle:'medium'}).format(d); }
+  function formatDateTime(v){ if(!v) return 'No disponible'; const d=new Date(v); return isNaN(d)?String(v):new Intl.DateTimeFormat('es-EC',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Guayaquil'}).format(d); }
+
+  async function fetchLiveExcel(){
+    if(location.protocol === 'file:'){
+      throw new Error('El dashboard debe abrirse desde un servidor web para consultar el Excel origen.');
+    }
+    if(!API_URL || API_URL.includes('REEMPLAZAR')){
+      throw new Error('El API de lectura directa todavía no está configurado en config.js.');
+    }
+    const sep = API_URL.includes('?') ? '&' : '?';
+    const response = await fetch(`${API_URL}${sep}_=${Date.now()}`, {
+      cache: 'no-store',
+      headers: {'Accept':'application/json','Cache-Control':'no-cache'}
+    });
+    let payload = null;
+    try { payload = await response.json(); } catch (_) {}
+    if(!response.ok){
+      throw new Error(payload?.error || `Error HTTP ${response.status}`);
+    }
+    const arr = Array.isArray(payload) ? payload : (Array.isArray(payload?.data) ? payload.data : []);
+    const rows = arr.map(normalizeRow).filter(validNro);
+    if(!rows.length) throw new Error('El Excel origen no devolvió registros válidos.');
+    return {rows, meta: payload?.meta || {}};
+  }
+
+  function setBanner(kind,msg){ const b=$('sourceBanner'); b.className=`source-banner ${kind} show`; b.textContent=msg; }
+  function clearBanner(){ $('sourceBanner').className='source-banner'; }
+  function setHealth(kind,text){ $('healthDot').className=`dot ${kind}`; $('healthText').textContent=text; }
+
+  async function loadData(showMessage=true){
+    setHealth('', 'Consultando Excel origen');
+    try{
+      const live = await fetchLiveExcel();
+      data = sortNewest(live.rows);
+      sourceMeta = live.meta || {};
+      activeSource = sourceMeta.sourceName || 'Excel institucional · SharePoint';
+      lastSuccessfulUpdate = new Date();
+      setHealth('ok','Excel origen activo');
+      if(showMessage){
+        setBanner('ok',`Información actualizada directamente desde el Excel origen: ${data.length} registros.`);
+      }else{
+        clearBanner();
+      }
+    }catch(err){
+      if(data.length){
+        setHealth('warn','No se pudo actualizar');
+        const when = lastSuccessfulUpdate ? formatDateTime(lastSuccessfulUpdate.toISOString()) : 'una consulta anterior';
+        setBanner('warn',`No se pudo consultar el Excel origen. Se conservan temporalmente los datos cargados en ${when}. Motivo: ${err.message}`);
+      }else{
+        data = [];
+        sourceMeta = {};
+        activeSource = 'Excel origen no disponible';
+        setHealth('error','Fuente no disponible');
+        setBanner('error',`No fue posible consultar el Excel institucional de origen. ${err.message}`);
+      }
+    }
+    renderFilterOptions(); applyFilters(); updateHealth();
+  }
+
+  function updateHealth(){
+    $('sourceActive').textContent=activeSource;
+    $('sourceRecords').textContent=`${data.length} registros`;
+    const stamp = sourceMeta?.sourceModifiedAt || sourceMeta?.fetchedAt || (lastSuccessfulUpdate ? lastSuccessfulUpdate.toISOString() : null);
+    $('sourceUpdated').textContent=stamp ? formatDateTime(stamp) : 'No disponible';
+    const maxN=data.reduce((m,r)=>Math.max(m,parseNum(r.nro)||0),0);
+    $('sourceLastNro').textContent=maxN?`Nro. ${maxN}`:'—';
+  }
+
+  function renderFilterOptions(){
+    const map=[['programFilter','programa'],['statusFilter','estado'],['trafficFilter','semaforo'],['responseFilter','respuesta']];
+    map.forEach(([id,field])=>{ const el=$(id), current=el.value; el.innerHTML=`<option value="">${id==='responseFilter'?'Todas':'Todos'}</option>`+unique(field).map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join(''); if([...el.options].some(o=>o.value===current)) el.value=current; });
+  }
+  function activeFilterCount(){ return ['searchInput','programFilter','statusFilter','trafficFilter','responseFilter','progressFilter'].filter(id=>$(id).value).length; }
+  function applyFilters(){
+    const q=normalize($('searchInput').value), program=$('programFilter').value, status=$('statusFilter').value, traffic=$('trafficFilter').value, response=$('responseFilter').value, progress=$('progressFilter').value;
+    filtered=sortNewest(data.filter(r=>{
+      if(program&&r.programa!==program) return false; if(status&&r.estado!==status) return false; if(traffic&&r.semaforo!==traffic) return false; if(response&&r.respuesta!==response) return false;
+      if(progress){ const [a,b]=progress.split('-').map(Number), p=pct(r.avance); if(p<a||p>b) return false; }
+      if(q&&!normalize(Object.values(r).join(' ')).includes(q)) return false; return true;
+    }));
+    $('filterCount').textContent=activeFilterCount(); $('visibleLabel').textContent=filtered.length; renderAll();
+  }
+
+  function updateKpis(){
+    const total=filtered.length, totalAmt=filtered.reduce((s,r)=>s+(Number(r.valor)||0),0), avg=total?filtered.reduce((s,r)=>s+(Number(r.avance)||0),0)/total:0;
+    const crit=filtered.filter(r=>normalize(r.semaforo).includes('critico')).length, fin=filtered.filter(r=>normalize(r.estado).includes('finalizado')).length, gestion=filtered.filter(r=>!normalize(r.estado).includes('finalizado')&&!normalize(r.estado).includes('sin iniciar')).length;
+    $('kpiTotal').textContent=number.format(total); $('kpiMonto').textContent=money.format(totalAmt); $('kpiAvance').textContent=`${Math.round(avg*100)}%`; $('kpiCriticas').textContent=crit; $('kpiFinalizadas').textContent=fin; $('kpiGestion').textContent=gestion;
+  }
+  function renderLatest(){
+    const latest=data[0]; if(!latest){ $('latestTitle').textContent='Sin registros'; $('latestSubtitle').textContent=''; $('latestAmount').textContent='—'; return; }
+    $('latestTitle').textContent=`Donación Nro. ${latest.nro} · ${latest.programa||'Sin programa'}`;
+    $('latestSubtitle').textContent=`${latest.beneficiario||'Sin beneficiario'} · ${formatDate(latest.fechaIntencion)} · ${latest.estado||'Sin estado'}`;
+    $('latestAmount').textContent=money.format(latest.valor||0);
+  }
+  function donationCard(r){
+    const latest=data[0]&&String(r.nro)===String(data[0].nro); const p=pct(r.avance); const sc=semClass(r.semaforo);
+    return `<article class="donation-card ${latest?'is-latest':''}">
+      <div class="donation-head"><div><div class="donation-id">Donación Nro. ${esc(r.nro)} ${latest?'· MÁS RECIENTE':''}</div><div class="donation-title">${esc(r.programa||'Sin programa')}</div><div class="donation-beneficiary">${esc(r.beneficiario||'Sin beneficiario')}</div></div><div class="amount">${money.format(r.valor||0)}</div></div>
+      <div class="meta-row"><span class="pill estado"><i class="fa-solid fa-circle-half-stroke"></i>${esc(r.estado||'Sin estado')}</span><span class="pill ${sc}"><i class="fa-solid fa-traffic-light"></i>${esc(r.semaforo||'Sin semáforo')}</span><span class="pill sin-iniciar"><i class="fa-regular fa-calendar"></i>${esc(formatDate(r.fechaIntencion))}</span></div>
+      <div class="description">${esc(r.descripcion||'Sin descripción registrada.')}</div>
+      <div class="action-box"><strong>Próxima acción</strong><br>${esc(r.proximaAccion||'Sin acción registrada')}</div>
+      <div class="progress-wrap"><div class="progress-label"><span>Avance</span><span>${p}%</span></div><div class="progress"><div class="progress-bar" style="width:${p}%"></div></div></div>
+      <div class="card-footer-row"><span><i class="fa-regular fa-clock me-1"></i>${r.diasGestion===null?'s/d':esc(r.diasGestion)} días · ${esc(r.responsable||'Sin responsable')}</span><button class="detail-btn" data-detail="${esc(r.nro)}"><i class="fa-solid fa-arrow-up-right-from-square me-1"></i>Detalle</button></div>
+    </article>`;
+  }
+  function renderCards(){ $('cardsCounter').textContent=`${filtered.length} registros`; $('donationGrid').innerHTML=filtered.length?filtered.map(donationCard).join(''):'<div class="text-muted p-3">No existen registros con los filtros seleccionados.</div>'; document.querySelectorAll('[data-detail]').forEach(b=>b.addEventListener('click',()=>openDetail(b.dataset.detail))); }
+  function renderTable(){
+    $('tableBody').innerHTML=filtered.length?filtered.map(r=>{ const p=pct(r.avance), latest=data[0]&&String(r.nro)===String(data[0].nro); return `<tr class="${latest?'row-latest':''}"><td><strong>${esc(r.nro)}</strong></td><td><strong>${esc(r.programa)}</strong><br><small class="text-muted">${esc(r.descripcion).slice(0,80)}${String(r.descripcion).length>80?'…':''}</small></td><td>${esc(r.beneficiario)}</td><td><strong>${money.format(r.valor||0)}</strong></td><td><span class="state-badge">${esc(r.estado||'Sin dato')}</span></td><td><div class="mini-progress"><div class="progress-label"><span></span><span>${p}%</span></div><div class="progress"><div class="progress-bar" style="width:${p}%"></div></div></div></td><td><span class="pill ${semClass(r.semaforo)}">${esc(r.semaforo||'Sin dato')}</span></td><td>${r.diasGestion===null?'s/d':esc(r.diasGestion)}</td><td>${esc(r.responsable)}</td><td><button class="detail-btn" data-detail="${esc(r.nro)}">Ver</button></td></tr>`; }).join(''):'<tr><td colspan="10" class="table-empty">Sin registros.</td></tr>';
+    document.querySelectorAll('#tableBody [data-detail]').forEach(b=>b.addEventListener('click',()=>openDetail(b.dataset.detail)));
+  }
+  function groupCount(field){ return filtered.reduce((a,r)=>{ const k=r[field]||'Sin dato'; a[k]=(a[k]||0)+1; return a; },{}); }
+  function groupSum(field){ return filtered.reduce((a,r)=>{ const k=r[field]||'Sin dato'; a[k]=(a[k]||0)+(Number(r.valor)||0); return a; },{}); }
+  function chart(id,type,labels,values,opts={}){ if(charts[id]) charts[id].destroy(); const ctx=$(id); if(!ctx||typeof Chart==='undefined') return; charts[id]=new Chart(ctx,{type,data:{labels,datasets:[{data:values,borderWidth:0,borderRadius:type==='bar'?7:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:type!=='bar',position:'bottom',labels:{boxWidth:10,usePointStyle:true,font:{size:10}}},tooltip:{callbacks:opts.money?{label:c=>money.format(c.raw||0)}:{}}},scales:type==='bar'?{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,grid:{color:'#edf1ef'},ticks:{font:{size:10},callback:opts.money?(v)=>'$'+number.format(v):undefined}}}:{}}}); }
+  function renderCharts(){ const s=groupCount('estado'), p=groupSum('programa'), t=groupCount('semaforo'); chart('chartStatus','doughnut',Object.keys(s),Object.values(s)); chart('chartProgram','bar',Object.keys(p),Object.values(p),{money:true}); chart('chartTraffic','doughnut',Object.keys(t),Object.values(t)); chart('chartProgress','bar',filtered.map(r=>`#${r.nro}`),filtered.map(r=>pct(r.avance))); }
+  function renderAll(){ updateKpis(); renderLatest(); renderCards(); renderTable(); if(!$('view-charts').classList.contains('d-none')) renderCharts(); }
+
+  function openDetail(nro){ const r=data.find(x=>String(x.nro)===String(nro)); if(!r) return; $('modalTitle').textContent=`Donación Nro. ${r.nro}`; $('modalSubtitle').textContent=`${r.programa} · ${r.beneficiario}`; const items=[['Programa / Proyecto',r.programa],['Beneficiario',r.beneficiario],['Valor estimado',money.format(r.valor||0)],['Fecha de intención',formatDate(r.fechaIntencion)],['Respuesta del beneficiario',r.respuesta||'Sin dato'],['Fecha acta entrega-recepción',formatDate(r.fechaActa)],['Estado',r.estado||'Sin dato'],['Avance',`${pct(r.avance)}%`],['Responsable / área',r.responsable||'Sin dato'],['Días en gestión',r.diasGestion===null?'Sin dato':r.diasGestion],['Semáforo',r.semaforo||'Sin dato'],['Descripción',r.descripcion||'Sin dato','full'],['Próxima acción requerida',r.proximaAccion||'Sin dato','full'],['Detalle del trámite',r.detalle||'Sin dato','full'],['Observaciones / alertas',r.observaciones||'Sin dato','full'],['Expediente digital',r.expediente?`<a href="${esc(r.expediente)}" target="_blank" rel="noopener">Abrir expediente <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a>`:'Sin enlace','full']]; $('modalBody').innerHTML=`<div class="detail-grid">${items.map(([l,v,c])=>`<div class="detail-item ${c||''}"><small>${esc(l)}</small><div>${l==='Expediente digital'?v:esc(v)}</div></div>`).join('')}</div>`; bootstrap.Modal.getOrCreateInstance($('detailModal')).show(); }
+
+  function clearFilters(){ ['searchInput','programFilter','statusFilter','trafficFilter','responseFilter','progressFilter'].forEach(id=>$(id).value=''); applyFilters(); }
+  function exportCsv(){ const headers=['Nro.','Programa','Beneficiario','Descripción','Valor','Fecha intención','Respuesta','Fecha acta','Estado','Avance','Próxima acción','Responsable','Expediente','Detalle','Observaciones','Días','Semáforo']; const keys=['nro','programa','beneficiario','descripcion','valor','fechaIntencion','respuesta','fechaActa','estado','avance','proximaAccion','responsable','expediente','detalle','observaciones','diasGestion','semaforo']; const q=v=>`"${String(v??'').replace(/"/g,'""')}"`; const csv='\ufeff'+[headers.map(q).join(';'),...filtered.map(r=>keys.map(k=>q(k==='avance'?`${pct(r[k])}%`:r[k])).join(';'))].join('\r\n'); const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'})); a.download='control-donaciones.csv'; a.click(); URL.revokeObjectURL(a.href); }
+  function loadExcel(file){ const reader=new FileReader(); reader.onload=e=>{ try{ if(typeof XLSX==='undefined') throw new Error('No se cargó la librería XLSX.'); const wb=XLSX.read(new Uint8Array(e.target.result),{type:'array',cellDates:true}); let rows=[]; for(const s of wb.SheetNames){ const ws=wb.Sheets[s], matrix=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:null}); const hi=matrix.findIndex(row=>Array.isArray(row)&&row.some(c=>key(c)==='nro')&&row.some(c=>['programa','proyecto','fondo','beneficiario'].some(x=>key(c).includes(x)))); if(hi>=0){ const headers=matrix[hi].map(x=>String(x??'').trim()); rows=matrix.slice(hi+1).filter(r=>Array.isArray(r)&&r.some(v=>v!==null&&v!==undefined&&String(v).trim()!=='' )).filter(r=>normalize(r[0])!=='total general').map(r=>{const o={}; headers.forEach((h,i)=>{if(h)o[h]=r[i]}); return normalizeRow(o)}).filter(validNro); if(rows.length) break; } } if(!rows.length) throw new Error('No se encontraron registros válidos en el Excel.'); data=sortNewest(rows); activeSource=`Modo contingencia · ${file.name}`; sourceMeta={fetchedAt:new Date().toISOString(),records:rows.length}; lastSuccessfulUpdate=new Date(); setHealth('warn','Modo contingencia'); setBanner('warn',`Excel local cargado en modo contingencia: ${rows.length} registros. Esta carga solo afecta esta sesión y no reemplaza el Excel institucional de origen.`); renderFilterOptions(); clearFilters(); updateHealth(); }catch(err){ setBanner('error',err.message||'No se pudo leer el Excel.'); } }; reader.readAsArrayBuffer(file); }
+
+  document.querySelectorAll('.view-tab').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.view-tab').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.view-panel').forEach(x=>x.classList.add('d-none')); $(`view-${btn.dataset.view}`).classList.remove('d-none'); if(btn.dataset.view==='charts') setTimeout(renderCharts,30); }));
+  ['searchInput','programFilter','statusFilter','trafficFilter','responseFilter','progressFilter'].forEach(id=>$(id).addEventListener(id==='searchInput'?'input':'change',applyFilters));
+  $('btnClear').addEventListener('click',clearFilters); $('btnCritical').addEventListener('click',()=>{ clearFilters(); const opt=[...$('trafficFilter').options].find(o=>normalize(o.value).includes('critico')); if(opt){ $('trafficFilter').value=opt.value; applyFilters(); } });
+  $('btnRefresh').addEventListener('click',()=>loadData(true)); $('btnExcel').addEventListener('click',()=>$('excelInput').click()); $('excelInput').addEventListener('change',e=>e.target.files[0]&&loadExcel(e.target.files[0])); $('btnExport').addEventListener('click',exportCsv);
+
+  loadData(false);
+  if(location.protocol!=='file:') setInterval(()=>loadData(false),REFRESH_SECONDS*1000);
+})();
+</script>
+</body>
+</html>

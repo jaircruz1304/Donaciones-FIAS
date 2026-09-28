@@ -1,0 +1,10 @@
+ANTES:
+Excel SharePoint -> GitHub Actions (30 min) -> JSON -> commit/push -> GitHub Pages -> snapshot HTML
+
+PROPUESTO:
+Excel SharePoint (fuente única) -> Azure Function / API -> Dashboard GitHub Pages
+                                      |
+                                      +-> valida duplicados
+                                      +-> recalcula días y semáforo
+                                      +-> no guarda JSON
+                                      +-> Cache-Control: no-store
